@@ -32,7 +32,7 @@ WHERE Price BETWEEN 60 AND 120;/* With BETWEEN */
 -- 5. Select the name and price in cents (i.e., the price must be multiplied by 100).
 
 SELECT  Name, 
-		 Price * 100 
+	Price * 100 
 FROM Products;  /* Without AS */
  
 SELECT Name, Price * 100 AS PriceCents 
@@ -58,8 +58,8 @@ WHERE Price >= 180;
 
 -- 9. Select the name and price of all products with a price larger than or equal to $180, and sort first by price (in descending order), and then by name (in ascending order).
 
-SELECT Name, 
-	   Price 
+SELECT  Name, 
+	Price 
 FROM Products
 WHERE Price >= 180
 ORDER BY Price DESC, Name;
@@ -79,16 +79,16 @@ LEFT JOIN Manufacturers
 -- 11. Select the product name, price, and manufacturer name of all the products.
 
 SELECT  Products.Name, 
-		Price, 
-		Manufacturers.Name
+	Price, 
+	Manufacturers.Name
 FROM  Products, 
-	  Manufacturers
+      Manufacturers
 WHERE Products.Manufacturer = Manufacturers.Code;  /* Without INNER JOIN */
 
 
 SELECT  Products.Name, 
-		Price, 
-		Manufacturers.Name
+	Price, 
+	Manufacturers.Name
 FROM Products 
 INNER JOIN Manufacturers
    ON Products.Manufacturer = Manufacturers.Code;  /* With INNER JOIN */
@@ -96,7 +96,7 @@ INNER JOIN Manufacturers
 -- 12. Select the average price of each manufacturer's products, showing only the manufacturer's code.
 
 SELECT  AVG(Price), 
-		Manufacturer
+	Manufacturer
 FROM Products
 GROUP BY Manufacturer;
 
@@ -104,14 +104,15 @@ GROUP BY Manufacturer;
 --13. Select the average price of each manufacturer's products, showing the manufacturer's name.
 
 SELECT  AVG(Price), 
-		Manufacturers.Name
-FROM Products, Manufacturers
+	Manufacturers.Name
+FROM Products, 
+     Manufacturers
 WHERE Products.Manufacturer = Manufacturers.Code
 GROUP BY Manufacturers.Name; /* Without INNER JOIN */
  
  
 SELECT  AVG(Price), 
-		Manufacturers.Name
+	Manufacturers.Name
 FROM Products 
 INNER JOIN Manufacturers
 	ON Products.Manufacturer = Manufacturers.Code
@@ -120,14 +121,15 @@ GROUP BY Manufacturers.Name; /* With INNER JOIN */
 -- 14. Select the names of manufacturer whose products have an average price larger than or equal to $150.
 
 SELECT  AVG(Price), 
-		Manufacturers.Name
+	Manufacturers.Name
 FROM Products, 
      Manufacturers
 WHERE Products.Manufacturer = Manufacturers.Code
 GROUP BY Manufacturers.Name
 HAVING AVG(Price) >= 150; /* Without INNER JOIN */
  
-SELECT AVG(Price), Manufacturers.Name
+SELECT 	AVG(Price), 
+	Manufacturers.Name
 FROM Products 
 INNER JOIN Manufacturers
 	ON Products.Manufacturer = Manufacturers.Code
@@ -136,58 +138,57 @@ HAVING AVG(Price) >= 150; /* With INNER JOIN */
 
 -- 15. Select the name and price of the cheapest product.
 
-SELECT name,
-	   price
+SELECT  name,
+	price
 FROM Products
 ORDER BY price ASC
 LIMIT 1
 
-SELECT Name, 
-	   Price
+SELECT  Name, 
+	Price
 FROM Products
 WHERE Price = 
 	(
-		SELECT MIN(Price) 
-		FROM Products
+	SELECT MIN(Price) 
+	FROM Products
 	); /* With a nested SELECT, If there is more than one item with the cheapest price it will select them both */
 
 -- 16. Select the name of each manufacturer along with the name and price of its most expensive product.
 
 SELECT 	A.Name, 
-		A.Price, 
-		F.Name
+	A.Price, 
+	F.Name
 FROM 	Products A, 
-		Manufacturers F
+	Manufacturers F
 WHERE A.Manufacturer = F.Code
   AND A.Price =
     (
-       SELECT MAX(A.Price)
-         FROM Products A
-         WHERE A.Manufacturer = F.Code
+      SELECT MAX(A.Price)
+      FROM Products A
+      WHERE A.Manufacturer = F.Code
      );/* With a nested SELECT and without INNER JOIN */
  
- 
-SELECT 	A.Name, 
-		A.Price, 
-		F.Name
+ SELECT A.Name, 
+	A.Price, 
+	F.Name
 FROM 	Products A 
 INNER JOIN Manufacturers F
   ON A.Manufacturer = F.Code
      AND A.Price =
      (
        SELECT MAX(A.Price)
-         FROM Products A
-         WHERE A.Manufacturer = F.Code
+       FROM Products A
+       WHERE A.Manufacturer = F.Code
      );/* With a nested SELECT and an INNER JOIN */
 	 
 
 -- 17. Select the name of each manufacturer which have an average price above $145 and contain at least 2 different products.
 
 SELECT 	m.Name, 
-		AVG(p.price) AS p_price, 
-		COUNT(p.Manufacturer) AS m_count
+	AVG(p.price) AS p_price, 
+	COUNT(p.Manufacturer) AS m_count
 FROM 	Manufacturers m, 
-		Products p
+	Products p
 WHERE p.Manufacturer = m.code
 GROUP BY p.Manufacturer
 HAVING p_price >= 150 AND m_count >= 2;
